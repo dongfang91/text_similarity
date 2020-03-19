@@ -23,7 +23,7 @@ pip install -U sentence-transformers
 First, the sentence corpus should be downloaded and saved in the directory "data/sentence_corpus/". Please look at the format of the example file "data/sentence_corpus/input.tsv", each row of this tsv file is one sentence. 
 
 ### Model
-Second, the model should be downloaded ([sentence-BERT models](https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/)) and saved in the directory "data/model/". In this repository, we use the "roberta-base-nli-mean-tokens" as an example.
+Second, the model should be downloaded ([sentence-BERT models](https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/)) and saved in the directory "./model/". In this repository, we use the "roberta-base-nli-mean-tokens" as one example.
 
 ### Generate sentence embeddings for every sentence in the corpus
 Generate sentence embeddings and save them as pickle files.
