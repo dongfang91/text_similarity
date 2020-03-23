@@ -3,7 +3,7 @@ import argparse
 import read_files as read
 import os
 
-def main(model, sentence_corpus):
+def main(model_path, sentence_corpus):
 
     #### Read sentence courpus.  output: list of sentences ####
     sentences = read.read_from_tsv(os.path.join(sentence_corpus , "input.tsv"))
@@ -11,7 +11,7 @@ def main(model, sentence_corpus):
     print(sentences[:10])
 
     #### load sentence BERT models and generate sentence embeddings ####
-    embedder = SentenceTransformer(model)
+    embedder = SentenceTransformer(model_path)
     sentences_embedding = embedder.encode(sentences)
 
     read.save_in_pickle(os.path.join(sentence_corpus,"embeddings.pkl"),sentences_embedding)
