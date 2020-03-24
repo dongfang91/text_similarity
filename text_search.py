@@ -6,16 +6,28 @@ we want to find the most similar sentence in this corpus.
 
 This script outputs for various queries the top 5 most similar sentences in the corpus.
 """
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, models
 import scipy.spatial
 import argparse
 import read_files as read
 import os
 
 
-def main(model, sentence_corpus, query):
+def main(model_path, model_type,sentence_corpus, query):
+    if model_type.lower() in ["bert"]:
+        word_embedding_model = models.BERT(model_path)
 
-    embedder = SentenceTransformer(model)
+        # Apply mean pooling to get one fixed sized sentence vector
+        pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(),
+                                       pooling_mode_mean_tokens=True,
+                                       pooling_mode_cls_token=False,
+                                       pooling_mode_max_tokens=False)
+
+        embedder = SentenceTransformer(modules=[word_embedding_model, pooling_model])
+        #### load sentence BERT models and generate sentence embeddings ####
+    else:
+        #### load sentence BERT models and generate sentence embeddings ####
+        embedder = SentenceTransformer(model_path)
     corpus_embeddings = read.read_from_pickle(os.path.join(sentence_corpus, "embeddings.pkl"))
     corpus = read.read_from_tsv(os.path.join(sentence_corpus , "input.tsv"))
     sentences = [item for row in corpus for item in row]
@@ -44,6 +56,9 @@ if __name__ == "__main__":
     parser.add_argument('-model',
                         help='the direcotory of the model',required= True)
 
+    parser.add_argument('-model_type',
+                        help='the type of the model, sentence_bert or just bert',required= True)
+
     parser.add_argument('-embeddings',
                         help='the direcotory of the sentence embeddings',required=True)
 
@@ -52,7 +67,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     model_path = args.model
+    model_type = args.model_type
     corpus_embedding = args.embeddings
     query = args.query
 
-    main(model_path,corpus_embedding,query)
+    main(model_path, model_type, corpus_embedding,query)

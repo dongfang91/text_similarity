@@ -29,14 +29,14 @@ Second, the model should be downloaded ([sentence-BERT models](https://public.uk
 Generate sentence embeddings and save them as pickle files.
 
 ```
-python process_sentence_corpus.py -model model/roberta-base-nli-mean-tokens -sentences data/sentence_corpus/example.tsv -output data/output/sentence_embeddings.pkl
+python process_sentence_corpus.py -model model/roberta-base-nli-mean-tokens -model_type sentence_bert -sentences data/sentence_corpus/example.tsv -output data/output/
 ```
 
 ### Search most similar sentences in the corpus for the query 
 Find the 5 most similar sentence for the query
 
 ```
-python text_search.py -model model/roberta-base-nli-mean-tokens -embeddings data/sentence_corpus/ -query "I like eatting apples."
+python text_search.py -model model/roberta-base-nli-mean-tokens -model_type sentence_bert -embeddings data/output/ -query "I like eatting apples."
 ```
 
 ## Customize the sentence-BERT models

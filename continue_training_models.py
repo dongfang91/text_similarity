@@ -1,6 +1,6 @@
 from torch.utils.data import DataLoader
 import math
-from sentence_transformers import SentenceTransformer,  SentencesDataset, LoggingHandler, losses
+from sentence_transformers import SentenceTransformer,  SentencesDataset, LoggingHandler, losses, models
 from sentence_transformers.evaluation import TripletEvaluator
 from sentence_transformers.readers import TripletReader
 import logging
@@ -25,12 +25,27 @@ num_epochs = config['Parameters']['Epoch']
 train_batch_size = config['Parameters']['Batch']
 triplet_margin = config['Parameters']['Triplet_margin']
 
-def main(model_path,extra_dataset):
+def main(model_path,model_type,extra_dataset):
     # Read the dataset
     train_batch_size = 64
     num_epochs = 20
     model_save_path = model_path+'_continue_training_'+datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     n2c2_reader = TripletReader(extra_dataset)
+
+    if model_type.lower() in ["bert"]:
+        word_embedding_model = models.BERT(model_path)
+
+        # Apply mean pooling to get one fixed sized sentence vector
+        pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(),
+                                       pooling_mode_mean_tokens=True,
+                                       pooling_mode_cls_token=False,
+                                       pooling_mode_max_tokens=False)
+
+        embedder = SentenceTransformer(modules=[word_embedding_model, pooling_model])
+        #### load sentence BERT models and generate sentence embeddings ####
+    else:
+        #### load sentence BERT models and generate sentence embeddings ####
+        embedder = SentenceTransformer(model_path)
 
     # Load a pre-trained sentence transformer model
     model = SentenceTransformer(model_path)
